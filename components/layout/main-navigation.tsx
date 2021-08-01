@@ -15,6 +15,7 @@ function MainNavigation() {
       </Link>
       <nav>
         <ul>
+
           {!session && !loading && (
             <li>
               <Link href="/auth">Login</Link>
@@ -32,6 +33,7 @@ function MainNavigation() {
               <button>Logout</button>
             </li>
           )}
+          
         </ul>
       </nav>
     </header>
