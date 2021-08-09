@@ -19,7 +19,7 @@ export const getServerSideProps: GetServerSideProps = async context => {
   }
 
   return {
-    props: { session }
+    props: { session } // used by Provider in _app.tsx
   }
 
 }
