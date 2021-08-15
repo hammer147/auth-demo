@@ -3,11 +3,9 @@ import type { NextApiRequest, NextApiResponse } from 'next'
 import { getSession } from 'next-auth/client'
 import { hashPassword, verifyPassword } from '../../../lib/auth'
 import { connectToDatabase } from '../../../lib/db'
+import { PasswordData } from '../../../typings'
 
-type ReqBody = {
-  oldPassword: string
-  newPassword: string
-}
+type ReqBody = PasswordData
 
 type ResBody = {
   message: string
