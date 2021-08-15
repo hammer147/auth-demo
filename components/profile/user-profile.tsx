@@ -22,12 +22,12 @@ function UserProfile() {
   //   return <p className={classes.loading}>Loading...</p>
   // }
 
-  
+
 
   async function changePasswordHandler(passwordData: PasswordData): Promise<void> {
     const response = await fetch('/api/user/change-password', {
       method: 'PATCH',
-      body: JSON.stringify({ passwordData }),
+      body: JSON.stringify(passwordData),
       headers: { 'Content-Type': 'application/json' }
     })
     const data = await response.json()
@@ -37,7 +37,7 @@ function UserProfile() {
   return (
     <section className={classes.profile}>
       <h1>Your User Profile</h1>
-      <ProfileForm onChangePassword={changePasswordHandler}/>
+      <ProfileForm onChangePassword={changePasswordHandler} />
     </section>
   )
 }
