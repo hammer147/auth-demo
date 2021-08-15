@@ -3,19 +3,19 @@ import type { NextApiRequest, NextApiResponse } from 'next'
 import { hashPassword } from '../../../lib/auth'
 import { connectToDatabase } from '../../../lib/db'
 
-type Data = {
-  message: string
-}
-
-type User = {
+type ReqBody = {
   email?: string
   password?: string
 }
 
-export default async function handler(req: NextApiRequest, res: NextApiResponse<Data>) {
+type ResBody = {
+  message: string
+}
+
+export default async function handler(req: NextApiRequest, res: NextApiResponse<ResBody>) {
   if (req.method !== 'POST') return
 
-  const { email, password } = req.body as User
+  const { email, password } = req.body as ReqBody
 
   if (!email || !email.includes('@') || !password || password.trim().length < 7) {
     return res.status(422).json({ message: 'Invalid input.' })

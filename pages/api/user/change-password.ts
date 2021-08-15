@@ -4,19 +4,17 @@ import { getSession } from 'next-auth/client'
 import { hashPassword, verifyPassword } from '../../../lib/auth'
 import { connectToDatabase } from '../../../lib/db'
 
-type Data = {
-  message: string
-}
-
-type Passwords = {
+type ReqBody = {
   oldPassword: string
   newPassword: string
 }
 
-export default async function handler(req: NextApiRequest, res: NextApiResponse<Data>) {
-  if (req.method !== 'PATCH') {
-    return
-  }
+type ResBody = {
+  message: string
+}
+
+export default async function handler(req: NextApiRequest, res: NextApiResponse<ResBody>) {
+  if (req.method !== 'PATCH') return
 
   const session = await getSession({ req })
   if (!session) {
@@ -24,7 +22,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
   }
 
   const { email } = session.user!
-  const { oldPassword, newPassword } = req.body as Passwords
+  const { oldPassword, newPassword } = req.body as ReqBody
 
   let client: MongoClient
 
