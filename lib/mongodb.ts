@@ -19,12 +19,21 @@ const { MONGODB_USERNAME, MONGODB_PASSWORD, MONGODB_CLUSTER, MONGODB_DB } = proc
 //   }
 // }
 
+
 declare global {
   var mongo: {
     conn: MongoConnection | null
     promise: Promise<MongoConnection> | null
   }
 }
+
+// https://github.com/vercel/next.js/tree/canary/examples/with-mongodb
+
+/**
+ * Global is used here to maintain a cached connection across hot reloads
+ * in development. This prevents connections growing exponentially
+ * during API Route usage.
+ */
 
 let cached = global.mongo
 
