@@ -1,9 +1,8 @@
-import { MongoClient } from 'mongodb'
 import type { NextApiRequest, NextApiResponse } from 'next'
 import { getSession } from 'next-auth/client'
 import { hashPassword, verifyPassword } from '../../../lib/auth'
-import { connectToDatabase } from '../../../lib/db'
-import { PasswordData } from '../../../typings'
+import { connectToDatabase } from '../../../lib/mongodb'
+import { MongoConnection, PasswordData } from '../../../typings'
 
 type ReqBody = PasswordData
 
@@ -22,20 +21,22 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
   const { email } = session.user!
   const { oldPassword, newPassword } = req.body as ReqBody
 
-  let client: MongoClient
+  let connection: MongoConnection
 
   try {
-    client = await connectToDatabase()
+    connection = await connectToDatabase()
   } catch (error) {
     return res.status(500).json({ message: 'Could not connect to database.' })
   }
 
-  const usersCollection = client.db().collection('users')
+  const { client, db } = connection
+
+  const usersCollection = db.collection('users')
 
   const user = await usersCollection.findOne({ email })
 
   if (!user) {
-    client.close()
+    // client.close()
     return res.status(404).json({ message: 'User not found' })
   }
 
@@ -43,13 +44,13 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
   const passwordsAreEqual = await verifyPassword(oldPassword, currentPassword)
 
   if (!passwordsAreEqual) {
-    client.close()
+    // client.close()
     return res.status(403).json({ message: 'Invalid Password' })
   }
 
   const hashedPassword = await hashPassword(newPassword)
   const result = usersCollection.updateOne({ email }, { $set: { password: hashedPassword } })
 
-  client.close()
+  // client.close()
   res.status(200).json({ message: 'Password updated' })
 }
